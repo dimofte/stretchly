@@ -5,6 +5,8 @@ import DndManager from './utils/dndManager.js'
 import AppExclusionsManager from './utils/appExclusionsManager.js'
 import log from 'electron-log/main.js'
 
+const countdownReferences = ['startMiniBreak', 'startLongBreak', 'startMiniBreakNotification', 'startLongBreakNotification']
+
 class BreaksPlanner extends EventEmitter {
   constructor (settings) {
     super()
@@ -43,6 +45,21 @@ class BreaksPlanner extends EventEmitter {
         log.info('Stretchly: resuming breaks after idle time')
         this.emit('updateToolTip')
       }
+    })
+
+    this.naturalBreaksManager.on('idlePauseStarted', (idleTime) => {
+      if (this.isIdlePaused || this.isPaused || this.dndManager.isOnDnd || this.appExclusionsManager.isSchedulerCleared) return
+      if (!countdownReferences.includes(this.scheduler?.reference)) return
+      this.scheduler.pause(idleTime)
+      log.info('Stretchly: freezing countdown because of idle time')
+      this.emit('updateToolTip')
+    })
+
+    this.naturalBreaksManager.on('idlePauseFinished', () => {
+      if (!this.isIdlePaused) return
+      this.scheduler.resume()
+      log.info('Stretchly: resuming countdown after idle time')
+      this.emit('updateToolTip')
     })
 
     this.dndManager.on('dndStarted', () => {
@@ -237,6 +254,10 @@ class BreaksPlanner extends EventEmitter {
       if (this.settings.get('monitorDnd')) this.dndManager.start()
       this.appExclusionsManager.reinitialize(this.settings)
     }
+  }
+
+  get isIdlePaused () {
+    return this.scheduler?.isPaused === true
   }
 
   correctScheduler () {
