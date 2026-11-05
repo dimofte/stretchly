@@ -148,6 +148,17 @@ describe('scheduler', function () {
       calls.should.equal(0)
     })
 
+    it('pause() after the timer fired does nothing', function () {
+      schedule.plan()
+      vi.advanceTimersByTime(1100)
+      calls.should.equal(1)
+      schedule.pause()
+      schedule.isPaused.should.equal(false)
+      schedule.resume()
+      vi.advanceTimersByTime(5000)
+      calls.should.equal(1)
+    })
+
     it('pause() on an unplanned or cancelled scheduler does nothing', function () {
       schedule.pause()
       schedule.isPaused.should.equal(false)

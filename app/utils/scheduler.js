@@ -29,7 +29,7 @@ class Scheduler {
   }
 
   pause (extraTime = 0) {
-    if (this.timer === null) return
+    if (this.timer === null || this.timeLeft <= 0) return
     this.pausedTimeLeft = Math.min(this.delay, this.timeLeft + extraTime)
     clearTimeout(this.timer)
     this.timer = null
