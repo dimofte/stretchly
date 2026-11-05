@@ -2,6 +2,7 @@ class AppIcon {
   constructor ({
     platform,
     paused,
+    idlePaused,
     monochrome,
     inverted,
     darkMode,
@@ -12,6 +13,7 @@ class AppIcon {
   }) {
     this.platform = platform
     this.paused = paused
+    this.idlePaused = idlePaused
     this.monochrome = monochrome
     this.inverted = inverted
     this.darkMode = darkMode
@@ -23,11 +25,13 @@ class AppIcon {
 
   get trayIconFileName () {
     const pausedString = this.paused ? 'Paused' : ''
+    const idleString = !this.paused && this.idlePaused ? 'Idle' : ''
+    const monochromePausedString = this.paused || this.idlePaused ? 'Paused' : ''
     const invertedMonochromeString = this.inverted ? 'Inverted' : ''
     const darkModeString = this.darkMode ? 'Dark' : ''
     let suffixString = ''
 
-    if (!(this.paused || this.reference === 'finishMiniBreak' || this.reference === 'finishLongBreak')) {
+    if (!(this.paused || this.idlePaused || this.reference === 'finishMiniBreak' || this.reference === 'finishLongBreak')) {
       if (this.trayIconStyle === 'progress' && Number.isInteger(this.percentage) && this.percentage >= 0 && this.percentage <= 100) {
         suffixString = `Progress${this.percentage}`
       } else if (this.trayIconStyle === 'time' && Number.isInteger(this.timeToBreak) && this.timeToBreak >= 0 && this.timeToBreak <= 99) {
@@ -37,17 +41,17 @@ class AppIcon {
 
     if (this.monochrome) {
       if (this.platform === 'darwin') {
-        return `trayMacMonochrome${pausedString}${suffixString}Template.png`
+        return `trayMacMonochrome${monochromePausedString}${suffixString}Template.png`
       } else {
         const extString = this.platform === 'win32' ? 'ico' : 'png'
-        return `trayMonochrome${invertedMonochromeString}${pausedString}${suffixString}.${extString}`
+        return `trayMonochrome${invertedMonochromeString}${monochromePausedString}${suffixString}.${extString}`
       }
     } else {
       if (this.platform === 'darwin') {
-        return `trayMac${pausedString}${darkModeString}${suffixString}.png`
+        return `trayMac${pausedString}${idleString}${darkModeString}${suffixString}.png`
       } else {
         const extString = this.platform === 'win32' ? 'ico' : 'png'
-        return `tray${pausedString}${darkModeString}${suffixString}.${extString}`
+        return `tray${pausedString}${idleString}${darkModeString}${suffixString}.${extString}`
       }
     }
   }

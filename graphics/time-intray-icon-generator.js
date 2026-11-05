@@ -135,7 +135,7 @@ const macFamilies = [
 
 // Base/paused icons that need a Windows .ico (no number overlay)
 const baseIcoNames = [
-  'tray', 'trayDark', 'trayPaused', 'trayPausedDark',
+  'tray', 'trayDark', 'trayPaused', 'trayPausedDark', 'trayIdle', 'trayIdleDark',
   'trayMonochrome', 'trayMonochromePaused',
   'trayMonochromeInverted', 'trayMonochromeInvertedPaused'
 ]
@@ -146,6 +146,8 @@ async function generateBase () {
     { svg: 'appicon-colour-dark-mode.svg', outputs: [{ name: 'trayDark.png', size: 32 }, { name: 'trayMacDark.png', size: 16 }, { name: 'trayMacDark@2x.png', size: 32 }] },
     { svg: 'appicon-colour-light-mode-paused.svg', outputs: [{ name: 'trayPaused.png', size: 32 }, { name: 'trayMacPaused.png', size: 16 }, { name: 'trayMacPaused@2x.png', size: 32 }] },
     { svg: 'appicon-colour-dark-mode-paused.svg', outputs: [{ name: 'trayPausedDark.png', size: 32 }, { name: 'trayMacPausedDark.png', size: 16 }, { name: 'trayMacPausedDark@2x.png', size: 32 }] },
+    { svg: 'appicon-colour-light-mode-idle.svg', outputs: [{ name: 'trayIdle.png', size: 32 }, { name: 'trayMacIdle.png', size: 16 }, { name: 'trayMacIdle@2x.png', size: 32 }] },
+    { svg: 'appicon-colour-dark-mode-idle.svg', outputs: [{ name: 'trayIdleDark.png', size: 32 }, { name: 'trayMacIdleDark.png', size: 16 }, { name: 'trayMacIdleDark@2x.png', size: 32 }] },
     { svg: 'appicon-mono-light-mode.svg', outputs: [{ name: 'trayMonochrome.png', size: 32 }, { name: 'trayMacMonochromeTemplate.png', size: 16 }, { name: 'trayMacMonochromeTemplate@2x.png', size: 32 }] },
     { svg: 'appicon-mono-light-mode-paused.svg', outputs: [{ name: 'trayMonochromePaused.png', size: 32 }, { name: 'trayMacMonochromePausedTemplate.png', size: 16 }, { name: 'trayMacMonochromePausedTemplate@2x.png', size: 32 }] },
     { svg: 'appicon-mono-dark-mode.svg', outputs: [{ name: 'trayMonochromeInverted.png', size: 32 }] },

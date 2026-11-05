@@ -8,10 +8,15 @@ class StatusMessages {
     this.timeLeft = breakPlanner.scheduler.timeLeft
     this.timeToNextBreak = breakPlanner.timeToNextBreak
     this.isPaused = breakPlanner.isPaused
+    this.isIdlePaused = breakPlanner.isIdlePaused
     this.breakNumber = breakPlanner.breakNumber
     this.settings = settings
     this.i18next = i18next
     this.humanizeDuration = humanizeDuration
+  }
+
+  get idlePausedLine () {
+    return this.isIdlePaused ? '\n' + this.i18next.t('statusMessages.idlePaused') : ''
   }
 
   get trayMessage () {
@@ -49,7 +54,7 @@ class StatusMessages {
     if (this.reference === 'startLongBreak' || this.reference === 'startLongBreakNotification') {
       message += this.i18next.t('statusMessages.nextLongBreak') + ' ' +
         formatTimeIn(this.timeToNextBreak, this.settings.get('language'), this.i18next, this.humanizeDuration)
-      return message
+      return message + this.idlePausedLine
     }
 
     if (this.reference === 'startMiniBreak' || this.reference === 'startMiniBreakNotification') {
@@ -59,7 +64,7 @@ class StatusMessages {
         message += '\n' + this.i18next.t('statusMessages.nextLongBreak') + ' ' +
           this.i18next.t('statusMessages.afterMiniBreak', { count: longBreakInterval - breakNumber })
       }
-      return message
+      return message + this.idlePausedLine
     }
 
     return message

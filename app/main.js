@@ -700,6 +700,7 @@ function trayIconPath () {
       breakPlanner.dndManager.isOnDnd ||
       breakPlanner.naturalBreaksManager.isSchedulerCleared ||
       breakPlanner.appExclusionsManager.isSchedulerCleared,
+    idlePaused: breakPlanner.isIdlePaused,
     monochrome: settings.get('useMonochromeTrayIcon'),
     inverted: useDarkColors,
     darkMode: useDarkColors,
