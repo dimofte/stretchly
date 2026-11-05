@@ -12,6 +12,7 @@ class NaturalBreaksManager extends EventEmitter {
     this.timer = null
     this.isOnNaturalBreak = false
     this.isSchedulerCleared = false
+    this.isIdlePausing = false
     if (this.usingNaturalBreaks) {
       this.start()
     }
@@ -27,6 +28,7 @@ class NaturalBreaksManager extends EventEmitter {
 
   stop () {
     if (!this.timer) return
+    this._finishIdlePause()
     this.usingNaturalBreaks = false
     this.isOnNaturalBreak = false
     this.isSchedulerCleared = false
@@ -44,19 +46,39 @@ class NaturalBreaksManager extends EventEmitter {
     }
   }
 
+  get pauseTime () {
+    const pauseTime = this.settings.get('naturalBreaksInactivityPauseTime')
+    const resetTime = this.settings.get('naturalBreaksInactivityResetTime')
+    return pauseTime > 0 && pauseTime < resetTime ? pauseTime : 0
+  }
+
+  _finishIdlePause () {
+    if (!this.isIdlePausing) return
+    this.isIdlePausing = false
+    this.emit('idlePauseFinished')
+  }
+
   _checkIdleTime () {
     let lastIdleTime = 0
     this.timer = setInterval(() => {
       const idleTime = this.idleTime
-      if (!this.isOnNaturalBreak && idleTime > 20000) {
+      const pauseTime = this.pauseTime
+      const threshold = pauseTime || 20000
+      if (!this.isOnNaturalBreak && idleTime > threshold) {
         this.isOnNaturalBreak = true
       }
-      if (this.isOnNaturalBreak && idleTime < 20000) {
+      if (this.isOnNaturalBreak && idleTime < threshold) {
         this.isOnNaturalBreak = false
         if (lastIdleTime > this.settings.get('naturalBreaksInactivityResetTime')) {
           this.isSchedulerCleared = false
           this.emit('naturalBreakFinished')
         }
+      }
+      if (this.isOnNaturalBreak && pauseTime) {
+        this.isIdlePausing = true
+        this.emit('idlePauseStarted', idleTime)
+      } else {
+        this._finishIdlePause()
       }
       if (this.isOnNaturalBreak && idleTime > this.settings.get('naturalBreaksInactivityResetTime')) {
         this.isSchedulerCleared = true
