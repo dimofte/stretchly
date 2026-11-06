@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- `naturalBreaksInactivityPauseTime` advanced preference to pause the break countdown during short inactivity (a break that comes due before the pause time is reached still opens)
 - `pauseBreaksDurations` advanced preference to customize timed pause options and their shortcuts
 - CLI commands to postpone, skip and finish the current break
 - advanced preferences for custom break sounds

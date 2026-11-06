@@ -210,7 +210,8 @@
     "nextMiniBreak": "Next Mini break",
     "afterMiniBreak_one": "after {{count}} Mini break",
     "afterMiniBreak_other": "after {{count}} Mini breaks",
-    "resuming": "Resuming"
+    "resuming": "Resuming",
+    "idlePaused": "Paused while you're away"
   },
   "miniBreakIdeas": {
     "aaa": {

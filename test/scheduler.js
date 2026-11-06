@@ -80,4 +80,92 @@ describe('scheduler', function () {
         resolve()
       }, 160)
     }))
+
+  describe('pause and resume', function () {
+    let calls
+    let schedule
+
+    beforeEach(function () {
+      vi.useFakeTimers()
+      calls = 0
+      schedule = new Scheduler(() => { calls += 1 }, 1000)
+    })
+
+    afterEach(function () {
+      vi.useRealTimers()
+    })
+
+    it('pause() stops the callback and freezes timeLeft', function () {
+      schedule.plan()
+      vi.advanceTimersByTime(300)
+      schedule.pause()
+      vi.advanceTimersByTime(5000)
+      calls.should.equal(0)
+      schedule.isPaused.should.equal(true)
+      schedule.timeLeft.should.equal(700)
+    })
+
+    it('resume() continues from the frozen time', function () {
+      schedule.plan()
+      vi.advanceTimersByTime(300)
+      schedule.pause()
+      vi.advanceTimersByTime(5000)
+      schedule.resume()
+      schedule.isPaused.should.equal(false)
+      vi.advanceTimersByTime(699)
+      calls.should.equal(0)
+      vi.advanceTimersByTime(1)
+      calls.should.equal(1)
+    })
+
+    it('pause(extraTime) credits elapsed idle time', function () {
+      schedule.plan()
+      vi.advanceTimersByTime(600)
+      schedule.pause(400)
+      schedule.timeLeft.should.equal(800)
+    })
+
+    it('pause(extraTime) never exceeds the delay', function () {
+      schedule.plan()
+      vi.advanceTimersByTime(300)
+      schedule.pause(5000)
+      schedule.timeLeft.should.equal(1000)
+    })
+
+    it('cancel() clears paused state', function () {
+      schedule.plan()
+      schedule.pause()
+      schedule.cancel()
+      schedule.isPaused.should.equal(false)
+      schedule.timeLeft.should.equal(false)
+    })
+
+    it('correct() keeps a paused scheduler paused', function () {
+      schedule.plan()
+      schedule.pause()
+      schedule.correct()
+      vi.advanceTimersByTime(5000)
+      calls.should.equal(0)
+    })
+
+    it('pause() after the timer fired does nothing', function () {
+      schedule.plan()
+      vi.advanceTimersByTime(1100)
+      calls.should.equal(1)
+      schedule.pause()
+      schedule.isPaused.should.equal(false)
+      schedule.resume()
+      vi.advanceTimersByTime(5000)
+      calls.should.equal(1)
+    })
+
+    it('pause() on an unplanned or cancelled scheduler does nothing', function () {
+      schedule.pause()
+      schedule.isPaused.should.equal(false)
+      schedule.plan()
+      schedule.cancel()
+      schedule.pause()
+      schedule.isPaused.should.equal(false)
+    })
+  })
 })

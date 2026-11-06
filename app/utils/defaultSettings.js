@@ -36,6 +36,7 @@ export default {
   ideas: true,
   naturalBreaks: true,
   naturalBreaksInactivityResetTime: 300000,
+  naturalBreaksInactivityPauseTime: 0,
   naturalBreaksCheckInterval: 2000,
   allScreens: true,
   useIdeasFromSettings: false,

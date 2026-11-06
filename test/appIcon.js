@@ -1456,4 +1456,96 @@ describe('appIcon', function () {
     const appIcon = new AppIcon(params)
     appIcon.trayIconFileName.should.equal('tray.png')
   })
+  it('trayIconFileName works for idle paused dark mode on macOS ignores progress', function () {
+    const params = {
+      paused: false,
+      monochrome: false,
+      inverted: false,
+      darkMode: true,
+      platform: 'darwin',
+      trayIconStyle: 'progress',
+      percentage: 40,
+      idlePaused: true,
+      reference: 'startMiniBreak'
+    }
+    const appIcon = new AppIcon(params)
+    appIcon.trayIconFileName.should.equal('trayMacIdleDark.png')
+  })
+
+  it('trayIconFileName works for idle paused light mode on Linux ignores time', function () {
+    const params = {
+      paused: false,
+      monochrome: false,
+      inverted: false,
+      darkMode: false,
+      platform: 'linux',
+      trayIconStyle: 'time',
+      timeToBreak: 12,
+      idlePaused: true,
+      reference: 'startMiniBreak'
+    }
+    const appIcon = new AppIcon(params)
+    appIcon.trayIconFileName.should.equal('trayIdle.png')
+  })
+
+  it('trayIconFileName works for idle paused dark mode on Windows', function () {
+    const params = {
+      paused: false,
+      monochrome: false,
+      inverted: false,
+      darkMode: true,
+      platform: 'win32',
+      trayIconStyle: 'default',
+      idlePaused: true,
+      reference: 'startMiniBreak'
+    }
+    const appIcon = new AppIcon(params)
+    appIcon.trayIconFileName.should.equal('trayIdleDark.ico')
+  })
+
+  it('trayIconFileName works for idle paused monochrome on macOS', function () {
+    const params = {
+      paused: false,
+      monochrome: true,
+      inverted: false,
+      darkMode: false,
+      platform: 'darwin',
+      trayIconStyle: 'time',
+      timeToBreak: 12,
+      idlePaused: true,
+      reference: 'startMiniBreak'
+    }
+    const appIcon = new AppIcon(params)
+    appIcon.trayIconFileName.should.equal('trayMacMonochromePausedTemplate.png')
+  })
+
+  it('trayIconFileName works for idle paused inverted monochrome on Linux', function () {
+    const params = {
+      paused: false,
+      monochrome: true,
+      inverted: true,
+      darkMode: true,
+      platform: 'linux',
+      trayIconStyle: 'default',
+      idlePaused: true,
+      reference: 'startMiniBreak'
+    }
+    const appIcon = new AppIcon(params)
+    appIcon.trayIconFileName.should.equal('trayMonochromeInvertedPaused.png')
+  })
+
+  it('trayIconFileName works for paused wins over idle paused', function () {
+    const params = {
+      paused: true,
+      monochrome: false,
+      inverted: false,
+      darkMode: true,
+      platform: 'darwin',
+      trayIconStyle: 'default',
+      idlePaused: true,
+      reference: 'startMiniBreak'
+    }
+    const appIcon = new AppIcon(params)
+    appIcon.trayIconFileName.should.equal('trayMacPausedDark.png')
+  })
 })
